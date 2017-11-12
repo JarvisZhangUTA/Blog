@@ -32,7 +32,7 @@
                 </div>
 
                 <div class="panel-body">
-                    <topic-list-thumb user_id="{{Auth::user()->id}}"></topic-list-thumb>
+                    <topic-list-thumb owner_id="{{Auth::user()->id}}"></topic-list-thumb>
                 </div>
             </div>
         </div>

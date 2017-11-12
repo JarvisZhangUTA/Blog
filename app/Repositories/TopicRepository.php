@@ -25,12 +25,12 @@ class TopicRepository
         return Topic::where('id', $id)->with(['comments'])->first();
     }
 
-    function findByOwner($user_id) {
-        return Topic::where('user_id', $user_id)->get();
+    function findByOwner($owner_id) {
+        return Topic::where('user_id', $owner_id)->get();
     }
 
     function findByFollower($user_id) {
-        $user =  User::where('id', $user_id)->with(['follows'])->first();
+        $user =  User::where('id', $user_id)->first();
         return $user->follows;
     }
 

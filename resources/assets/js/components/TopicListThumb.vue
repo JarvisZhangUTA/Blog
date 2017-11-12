@@ -9,7 +9,7 @@
                     </a>
                 </div>
                 <div class="media-bottom">
-                    By {{topic.user.name}} at {{topic.created_at}}
+                    {{topic.created_at}}
                     · {{topic.num_comments}} comments
                 </div>
             </div>
