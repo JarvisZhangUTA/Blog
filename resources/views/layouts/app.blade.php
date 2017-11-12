@@ -54,6 +54,10 @@
                                 <ul class="dropdown-menu">
                                     <li>
 
+                                        <a href="{{ route('create_topic') }}">
+                                            New Topic
+                                        </a>
+
                                         <a href="{{ route('home') }}">
                                             Home
                                         </a>
