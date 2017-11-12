@@ -7,7 +7,6 @@
  */
 
 namespace App\Repositories;
-use App\Follow;
 use App\Topic;
 use App\User;
 
@@ -31,7 +30,7 @@ class TopicRepository
     }
 
     function findByFollower($user_id) {
-        $user =  User::where('id', $user_id)->with(['user'])->first();
+        $user =  User::where('id', $user_id)->with(['follows'])->first();
         return $user->follows;
     }
 
