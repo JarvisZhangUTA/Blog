@@ -44360,37 +44360,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    mounted: function mounted() {
-        var _this = this;
-
-        this.$http.post('/api/topics/search').then(function (res) {
-            _this.topics = res.data;
-        });
-    },
-
     watch: {
         keyword: function keyword(val, oldVal) {
-            var _this2 = this;
+            var _this = this;
 
-            this.$http.post('/api/topics/search', {
-                keyword: this.keyword
-            }).then(function (res) {
-                _this2.topics = res.data;
-            });
+            if (val) this.$http.get('http://' + window.location.host + ':9200/blog/topics/_search?' + 'q=+title:' + val + '+body:' + val).then(function (res) {
+                _this.hits = res.body.hits.hits;
+                console.log(_this.hits.length);
+            });else {
+                this.hits = [];
+            }
         }
     },
     data: function data() {
         return {
             keyword: '',
-            topics: []
+            hits: []
         };
     }
 });
@@ -44405,6 +44392,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
+    { staticClass: "btn-group", staticStyle: { width: "100%" } },
     [
       _c("input", {
         directives: [
@@ -44415,8 +44403,12 @@ var render = function() {
             expression: "keyword"
           }
         ],
-        staticClass: "form-control",
-        attrs: { type: "text", placeholder: "Search..." },
+        staticClass: "dropdown-toggle form-control",
+        attrs: {
+          placeholder: "Search...",
+          "data-toggle": "dropdown",
+          type: "text"
+        },
         domProps: { value: _vm.keyword },
         on: {
           input: function($event) {
@@ -44428,45 +44420,33 @@ var render = function() {
         }
       }),
       _vm._v(" "),
-      _vm._l(_vm.topics, function(topic) {
-        return _c("div", { staticClass: "media" }, [
-          _c("div", { staticClass: "media-body" }, [
-            _c("div", { staticClass: "media-heading" }, [
-              _c("h2", [
-                _c("a", { attrs: { href: "/topics/" + topic.id } }, [
-                  _vm._v(
-                    "\n                        " +
-                      _vm._s(topic.title) +
-                      "\n                    "
-                  )
+      _vm.hits.length > 0
+        ? _c(
+            "ul",
+            {
+              staticClass: "dropdown-menu list-group",
+              staticStyle: { width: "100%" }
+            },
+            _vm._l(_vm.hits, function(hit) {
+              return _c("li", [
+                _c("a", { attrs: { href: "/topics/" + hit._source.id } }, [
+                  _c("span", [_vm._v(_vm._s(hit._source.title))]),
+                  _vm._v(" "),
+                  _c("span", { staticClass: "pull-right" }, [
+                    _vm._v(
+                      "\n                    " +
+                        _vm._s(hit._source.created_at) +
+                        " · " +
+                        _vm._s(hit._source.num_comments) +
+                        " comments\n                "
+                    )
+                  ])
                 ])
-              ]),
-              _vm._v(" "),
-              _c("p", [
-                _c("small", { domProps: { innerHTML: _vm._s(topic.brief) } })
               ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "media-bottom text-right" }, [
-              _vm._v(
-                "\n                By " +
-                  _vm._s(topic.user.name) +
-                  " at " +
-                  _vm._s(topic.created_at) +
-                  "\n                · " +
-                  _vm._s(topic.num_comments) +
-                  " comments\n            "
-              )
-            ]),
-            _vm._v(" "),
-            _c("br"),
-            _vm._v(" "),
-            _c("hr")
-          ])
-        ])
-      })
-    ],
-    2
+            })
+          )
+        : _vm._e()
+    ]
   )
 }
 var staticRenderFns = []

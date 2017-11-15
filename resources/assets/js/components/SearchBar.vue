@@ -1,54 +1,47 @@
 <template>
-    <div>
-        <input type="text" class="form-control" placeholder="Search..."
-               v-model="keyword">
-
-        <div v-for="topic in topics" class="media">
-            <div class="media-body">
-                <div class="media-heading">
-                    <h2>
-                        <a v-bind:href="'/topics/' + topic.id">
-                            {{topic.title}}
-                        </a>
-                    </h2>
-                    <p>
-                        <small v-html="topic.brief">
-                        </small>
-                    </p>
-                </div>
-                <div class="media-bottom text-right">
-                    By {{topic.user.name}} at {{topic.created_at}}
-                    · {{topic.num_comments}} comments
-                </div>
-
-                <br>
-                <hr>
-            </div>
-        </div>
+    <!--<div>-->
+        <!--<input type="text" class="form-control" placeholder="Search..." v-model="keyword">-->
+        <!--<div style="position: absolute;top: 100%;left: 0;z-index: 1000;">-->
+            <!--{{hits}}-->
+        <!--</div>-->
+    <!--</div>-->
+    <div class="btn-group" style="width:100%;">
+        <input class="dropdown-toggle form-control"
+               v-model="keyword"
+               placeholder="Search..."
+               data-toggle="dropdown" type="text"/>
+        <ul v-if="hits.length > 0" class="dropdown-menu list-group" style="width:100%">
+            <li v-for="hit in hits">
+                <a v-bind:href="'/topics/' + hit._source.id">
+                    <span>{{hit._source.title}}</span>
+                    <span class="pull-right">
+                        {{hit._source.created_at}} · {{hit._source.num_comments}} comments
+                    </span>
+                </a>
+            </li>
+        </ul>
     </div>
-
 </template>
 
 <script>
     export default {
-        mounted() {
-            this.$http.post('/api/topics/search',).then(res => {
-                this.topics = res.data;
-            });
-        },
         watch: {
             keyword: function(val, oldVal) {
-                this.$http.post('/api/topics/search',{
-                    keyword: this.keyword
-                }).then(res => {
-                    this.topics = res.data;
-                });
+                if(val)
+                    this.$http.get('http://' + window.location.host + ':9200/blog/topics/_search?'
+                        + 'q=+title:' + val + '+body:' + val).then(res => {
+                        this.hits = res.body.hits.hits;
+                        console.log(this.hits.length);
+                    });
+                else {
+                    this.hits = [];
+                }
             }
         },
         data() {
             return {
                 keyword: '',
-                topics: []
+                hits: []
             };
         }
     }

@@ -135,9 +135,9 @@ class TopicController extends Controller
             return $this->topicRepository->findByFollower($follower_id);
         }
 
-        $follower_id = $request->get('keyword');
-        if($follower_id) {
-            return $this->topicRepository->findByKeyword($follower_id);
+        $keyword = $request->get('keyword');
+        if($keyword) {
+            return $this->topicRepository->findByKeyword($keyword);
         }
 
         return $this->topicRepository->getTopicsFeed();
